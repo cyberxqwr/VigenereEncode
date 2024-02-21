@@ -12,15 +12,17 @@ namespace VigenereEncode.Workspace
     public class Wspc
     {
 
-        private Regex par = new Regex("[A-Za-z0-9]+");
+        private Regex par = new Regex("[^a-zA-Z0-9]");
         private string encWord;
         private string key;
         private int programInput = -1;
         private Util util = new Util();
 
-        public Wspc() {
+        public Wspc()
+        {
 
-            while(programInput != 0) {
+            while (programInput != 0)
+            {
 
                 Console.WriteLine(util.options.ElementAt(2));
                 Console.WriteLine(util.options.ElementAt(3));
@@ -55,7 +57,7 @@ namespace VigenereEncode.Workspace
                 }
 
             }
-            
+
         }
 
         private void StartReading()
@@ -72,21 +74,12 @@ namespace VigenereEncode.Workspace
 
                     Console.WriteLine(util.exceptions.ElementAt(0));
                     encWord = Console.ReadLine();
-                    if (par.IsMatch(encWord))
-                    {
-
-                    }   else
-                    {
-                        do
-                        {
-                            Console.WriteLine(util.exceptions.ElementAt(3));
-                            encWord = Console.ReadLine();
-                        } while (!par.IsMatch(encWord));
-                    }
-                    
                 }
 
             }
+
+            if (programInput == 1 || programInput == 3) encWord = CheckForViolations(encWord);
+
             Console.WriteLine(util.options.ElementAt(1));
             key = Console.ReadLine();
 
@@ -101,6 +94,8 @@ namespace VigenereEncode.Workspace
                 }
 
             }
+
+            if (programInput == 1 || programInput == 3) key = CheckForViolations(key);
         }
 
         private void StartHashing(int parameter)
@@ -108,7 +103,7 @@ namespace VigenereEncode.Workspace
 
             using (TextHash ENC = new TextHash(encWord, key))
             {
-                
+
                 switch (parameter)
                 {
                     case 1:
@@ -124,11 +119,31 @@ namespace VigenereEncode.Workspace
                         Console.WriteLine(util.info.ElementAt(1) + ENC.StartUnhashingASCII());
                         break;
                 }
-                    
+
             }
+
+
+        }
+
+        private string CheckForViolations(string text)
+        {
+
+            if (!par.IsMatch(text))
+            {
+                return text;
+            }
+            else
+            {
+                do
+                {
+                    Console.WriteLine(util.exceptions.ElementAt(3));
+                    text = Console.ReadLine();
+                } while (par.IsMatch(text));
+            }
+
+            return text; ;
 
         }
 
     }
-
 }

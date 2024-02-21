@@ -10,11 +10,11 @@ namespace VigenereEncode.Encryption
     {
 
         private string regex = "0123456789" + "abcdefghijklmnopqrstuvwxyz" + "abcdefghijklmnopqrstuvwxyz".ToUpper();
-        private string regexASCII = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         private string encWord;
         private string key;
         private string hashedWord;
         private int keyOriginalLength;
+        private char e, k;
 
 
         // Disposeable
@@ -65,8 +65,6 @@ namespace VigenereEncode.Encryption
 
                 key = sb.ToString();
 
-                Console.WriteLine(key);
-                Console.ReadKey();
             }   else
             {
 
@@ -103,8 +101,6 @@ namespace VigenereEncode.Encryption
             }
 
             hashedWord = sb.ToString();
-            Console.WriteLine(hashedWord);
-            Console.ReadKey();
         }
 
         public string StartUnhashing()
@@ -148,22 +144,21 @@ namespace VigenereEncode.Encryption
         {
 
             StringBuilder sb = new StringBuilder();
-            int encWordPos, keyPos, newPos;
 
             for (int i = 0; i < encWord.Length; i++)
             {
 
-                encWordPos = regexASCII.IndexOf(encWord.ElementAt(i));
-                keyPos = regexASCII.IndexOf(key.ElementAt(i));
+                e = encWord.ElementAt(i);
+                k = key.ElementAt(i);
 
-                newPos = encWordPos + keyPos;
-
-                if (newPos < regexASCII.Length - 1)
+                if (e > 31 && e < 128)
                 {
 
-                    sb.Append(regexASCII[newPos]);
+                    k = (char)((int)k - 32);
+                    e = (char)(e - 32 + k);
+                    sb.Append((char)(e % 95 + 32));
                 }
-                else sb.Append(regexASCII[newPos - regexASCII.Length]);
+                else sb.Append(e);
             }
 
             hashedWord = sb.ToString();
@@ -179,22 +174,21 @@ namespace VigenereEncode.Encryption
         {
 
             StringBuilder sb = new StringBuilder();
-            int encWordPos, keyPos, newPos;
 
             for (int i = 0; i < encWord.Length; i++)
             {
 
-                encWordPos = regexASCII.IndexOf(encWord.ElementAt(i));
-                keyPos = regexASCII.IndexOf(key.ElementAt(i));
+                e = encWord.ElementAt(i);
+                k = key.ElementAt(i);
 
-                newPos = encWordPos - keyPos + (regexASCII.Length - 1);
-
-                if (newPos < regexASCII.Length - 1)
+                if (e > 31 && e < 128)
                 {
 
-                    sb.Append(regexASCII[newPos]);
+                    k = (char)((int)k - 32);
+                    e = (char)(e - 32 + (95 - k));
+                    sb.Append((char)(e % 95 + 32));
                 }
-                else sb.Append(regexASCII[newPos - (regexASCII.Length - 1)]);
+                else sb.Append(e);
             }
 
             hashedWord = sb.ToString();
